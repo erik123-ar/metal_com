@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model mantenimientos {
+  id_mantenimiento    Int       @id @default(autoincrement())
+  id_maquina          Int
+  fecha_mantenimiento DateTime  @db.Date
+  descripcion         String?
+  creado_en           DateTime? @default(now()) @db.Timestamp(6)
+  maquinas            maquinas  @relation(fields: [id_maquina], references: [id_maquina], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model maquinas {
+  id_maquina     Int              @id @default(autoincrement())
+  codigo         String           @unique @db.VarChar(30)
+  nombre         String           @db.VarChar(120)
+  tipo           String?          @db.VarChar(80)
+  marca          String?          @db.VarChar(80)
+  modelo         String?          @db.VarChar(80)
+  numero_serie   String?          @db.VarChar(100)
+  imagen         String?          @db.VarChar(250)
+  ubicacion      String?          @db.VarChar(120)
+  estado         String           @default("operativa") @db.VarChar(20)
+  observaciones  String?
+  creado_en      DateTime?        @default(now()) @db.Timestamp(6)
+  mantenimientos mantenimientos[]
+}
