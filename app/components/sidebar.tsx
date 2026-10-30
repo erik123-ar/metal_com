@@ -7,7 +7,6 @@ import {
   Factory,
   LayoutDashboard,
   Menu,
-  Plus,
   Wrench,
   X,
 } from "lucide-react";

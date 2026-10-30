@@ -1,16 +1,11 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import { listarMaquinas } from "@/app/controllers/maquina.controller";
-import { contarMantenimientos } from "@/app/controllers/mantenimiento.controller";
 import { StatusBadge } from "@/app/components/status-badge";
 
 export const instant = false;
 
 export default async function Home() {
-  const [maquinas, mantenimientos] = await Promise.all([
-    listarMaquinas(),
-    contarMantenimientos(),
-  ]);
+  const maquinas = await listarMaquinas();
 
   const resumen = [
     {
