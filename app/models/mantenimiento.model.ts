@@ -26,11 +26,28 @@ export async function crearMantenimiento(input: MantenimientoInput) {
     throw new Error("La fecha de mantenimiento no es válida.");
   }
 
-  return prisma.mantenimientos.create({
-    data: {
-      id_maquina: input.id_maquina,
-      fecha_mantenimiento: input.fecha_mantenimiento,
-      descripcion: input.descripcion?.trim() || null,
-    },
+  const maquina = await prisma.maquinas.findUnique({
+    where: { id_maquina: input.id_maquina },
+    select: { id_maquina: true },
   });
+
+  if (!maquina) {
+    throw new Error("La máquina seleccionada no existe.");
+  }
+
+  const [mantenimiento] = await prisma.$transaction([
+    prisma.mantenimientos.create({
+      data: {
+        id_maquina: input.id_maquina,
+        fecha_mantenimiento: input.fecha_mantenimiento,
+        descripcion: input.descripcion?.trim() || null,
+      },
+    }),
+    prisma.maquinas.update({
+      where: { id_maquina: input.id_maquina },
+      data: { estado: "mantenimiento" },
+    }),
+  ]);
+
+  return mantenimiento;
 }

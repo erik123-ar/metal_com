@@ -4,6 +4,8 @@ import { ArrowLeft, Pencil } from "lucide-react";
 import { obtenerMaquina } from "@/app/controllers/maquina.controller";
 import { StatusBadge } from "@/app/components/status-badge";
 import { DeleteMaquinaButton } from "@/app/components/delete-maquina-button";
+import { ErrorBanner } from "@/app/components/error-banner";
+import { finalizarMantenimientoAction } from "@/app/mantenimientos/actions";
 
 export const instant = false;
 
@@ -11,6 +13,7 @@ export default async function MaquinaDetallePage(
   props: PageProps<"/maquinas/[id]">,
 ) {
   const { id } = await props.params;
+  const { error } = await props.searchParams;
   const idMaquina = Number(id);
 
   if (!Number.isInteger(idMaquina) || idMaquina <= 0) {
@@ -56,6 +59,17 @@ export default async function MaquinaDetallePage(
           <p className="mt-1 text-sm text-ink">Código {maquina.codigo}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {maquina.estado === "mantenimiento" && (
+            <form action={finalizarMantenimientoAction}>
+              <input type="hidden" name="id_maquina" value={maquina.id_maquina} />
+              <button
+                className="rounded-lg bg-industrial px-4 py-2 text-sm font-medium text-white transition hover:bg-industrial/90"
+                type="submit"
+              >
+                Finalizar mantenimiento
+              </button>
+            </form>
+          )}
           <Link
             className="flex items-center gap-2 rounded-lg bg-steel px-4 py-2 text-sm font-medium text-white transition hover:bg-steel/90"
             href={`/maquinas/${maquina.id_maquina}/editar`}
@@ -70,6 +84,8 @@ export default async function MaquinaDetallePage(
           />
         </div>
       </div>
+
+      <ErrorBanner mensaje={typeof error === "string" ? error : undefined} />
 
       <section className="mt-6 rounded-2xl border border-steel/10 bg-white p-6">
         <h2 className="font-semibold">Información del equipo</h2>

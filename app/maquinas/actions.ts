@@ -52,6 +52,27 @@ export async function crearMaquinaAction(formData: FormData) {
   redirect("/maquinas");
 }
 
+export type CrearMaquinaModalResult = {
+  error: string | null;
+};
+
+export async function crearMaquinaModalAction(
+  formData: FormData,
+): Promise<CrearMaquinaModalResult> {
+  try {
+    await registrarMaquina(leerMaquina(formData));
+  } catch (error) {
+    return {
+      error: mensajeDe(error, "No se pudo guardar la máquina."),
+    };
+  }
+
+  revalidatePath("/maquinas");
+  revalidatePath("/");
+
+  return { error: null };
+}
+
 export async function actualizarMaquinaAction(formData: FormData) {
   const id = leerId(formData);
 

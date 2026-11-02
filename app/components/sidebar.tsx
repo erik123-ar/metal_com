@@ -14,7 +14,7 @@ import {
 const enlaces = [
   { href: "/", label: "Panel", icon: LayoutDashboard },
   { href: "/maquinas", label: "Máquinas", icon: Factory },
-  { href: "", label: "Mantenimientos", icon: Wrench },
+  { href: "/mantenimientos", label: "Mantenimientos", icon: Wrench },
 ] as const;
 
 function Marca() {

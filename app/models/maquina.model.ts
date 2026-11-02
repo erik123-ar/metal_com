@@ -34,10 +34,33 @@ export async function listarMaquinas() {
   });
 }
 
+export async function listarMaquinasParaMantenimiento() {
+  return prisma.maquinas.findMany({
+    orderBy: { nombre: "asc" },
+    select: { id_maquina: true, codigo: true, nombre: true },
+  });
+}
+
 export async function obtenerMaquina(id: number) {
   return prisma.maquinas.findUnique({
     where: { id_maquina: id },
     include: { mantenimientos: { orderBy: { fecha_mantenimiento: "desc" } } },
+  });
+}
+
+export async function cambiarEstadoMaquina(id: number, estado: string) {
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new Error("La máquina seleccionada no es válida.");
+  }
+
+  const estadosValidos = ["operativa", "mantenimiento", "fuera_de_servicio"];
+  if (!estadosValidos.includes(estado)) {
+    throw new Error("El estado de la máquina no es válido.");
+  }
+
+  return prisma.maquinas.update({
+    where: { id_maquina: id },
+    data: { estado },
   });
 }
 
@@ -115,3 +138,10 @@ export async function eliminarMaquina(id: number) {
 
   return prisma.maquinas.delete({ where: { id_maquina: id } });
 }
+export async function listarMaquinaConFecha(){
+  return prisma.maquinas.findMany({
+      select: {
+        creado_en: true,
+      },
+});
+  }

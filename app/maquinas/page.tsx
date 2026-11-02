@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Eye, Pencil, Plus } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import { listarMaquinas } from "@/app/controllers/maquina.controller";
 import { StatusBadge } from "@/app/components/status-badge";
 import { ErrorBanner } from "@/app/components/error-banner";
 import { DeleteMaquinaButton } from "@/app/components/delete-maquina-button";
+import { NuevaMaquinaModal } from "@/app/components/nueva-maquina-modal";
 
 export const instant = false;
 
@@ -18,13 +19,7 @@ export default async function MaquinasPage(props: PageProps<"/maquinas">) {
           <h1 className="text-2xl font-bold">Máquinas</h1>
           <p className="mt-1 text-sm text-ink">Inventario de equipos registrados.</p>
         </div>
-        <Link
-          className="flex items-center gap-2 rounded-lg bg-industrial px-4 py-2 text-sm font-medium text-white transition hover:bg-industrial/90"
-          href="/maquinas/nueva"
-        >
-          <Plus className="size-4" />
-          Nueva máquina
-        </Link>
+        <NuevaMaquinaModal />
       </div>
 
       <ErrorBanner mensaje={typeof error === "string" ? error : undefined} />
@@ -43,8 +38,8 @@ export default async function MaquinasPage(props: PageProps<"/maquinas">) {
                   <th className="px-5 py-3">Tipo</th>
                   <th className="px-5 py-3">Ubicación</th>
                   <th className="px-5 py-3">Estado</th>
-                  <th className="px-5 py-3 text-right">Mant.</th>
                   <th className="px-5 py-3 text-right">Acciones</th>
+
                 </tr>
               </thead>
               <tbody className="divide-y divide-steel/10">
@@ -64,9 +59,7 @@ export default async function MaquinasPage(props: PageProps<"/maquinas">) {
                     <td className="px-5 py-4">
                       <StatusBadge estado={maquina.estado} />
                     </td>
-                    <td className="px-5 py-4 text-right text-ink">
-                      {maquina._count.mantenimientos}
-                    </td>
+
                     <td className="px-5 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <Link
@@ -91,6 +84,7 @@ export default async function MaquinasPage(props: PageProps<"/maquinas">) {
                         />
                       </div>
                     </td>
+
                   </tr>
                 ))}
               </tbody>

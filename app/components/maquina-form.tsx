@@ -30,7 +30,10 @@ type Props = {
   valores?: MaquinaValores;
   id?: number;
   textoBoton: string;
-  cancelHref: string;
+  cancelHref?: string;
+  onCancel?: () => void;
+  pending?: boolean;
+  variante?: "pagina" | "modal";
 };
 
 export function MaquinaForm({
@@ -39,11 +42,18 @@ export function MaquinaForm({
   id,
   textoBoton,
   cancelHref,
+  onCancel,
+  pending = false,
+  variante = "pagina",
 }: Props) {
   return (
     <form
       action={action}
-      className="mt-6 space-y-5 rounded-2xl border border-steel/10 bg-white p-6"
+      className={
+        variante === "modal"
+          ? "space-y-5"
+          : "mt-6 space-y-5 rounded-2xl border border-steel/10 bg-white p-6"
+      }
     >
       {id != null && <input type="hidden" name="id" value={id} />}
 
@@ -84,17 +94,30 @@ export function MaquinaForm({
 
       <div className="flex flex-wrap items-center gap-3 pt-1">
         <button
-          className="rounded-lg bg-industrial px-5 py-2 text-sm font-medium text-white transition hover:bg-industrial/90"
+          className="rounded-lg bg-industrial px-5 py-2 text-sm font-medium text-white transition hover:bg-industrial/90 disabled:cursor-not-allowed disabled:opacity-60"
           type="submit"
+          disabled={pending}
         >
           {textoBoton}
         </button>
-        <Link
-          className="rounded-lg px-4 py-2 text-sm font-medium text-ink transition hover:bg-canvas hover:text-steel"
-          href={cancelHref}
-        >
-          Cancelar
-        </Link>
+        {onCancel ? (
+          <button
+            className="rounded-lg px-4 py-2 text-sm font-medium text-ink transition hover:bg-canvas hover:text-steel"
+            type="button"
+            onClick={onCancel}
+          >
+            Cancelar
+          </button>
+        ) : (
+          cancelHref && (
+            <Link
+              className="rounded-lg px-4 py-2 text-sm font-medium text-ink transition hover:bg-canvas hover:text-steel"
+              href={cancelHref}
+            >
+              Cancelar
+            </Link>
+          )
+        )}
       </div>
     </form>
   );
